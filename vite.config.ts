@@ -12,8 +12,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icons/apple-touch-icon.png', 'icons/favicon.png'],
       manifest: {
-        name: 'Tones & Drones',
-        short_name: 'Tones',
+        name: 'Tones and Drones',
+        short_name: 'Tones and Drones',
         description: 'Ear training for microtonal pitch, plus drones and a metronome for practice.',
         theme_color: '#14161f',
         background_color: '#14161f',

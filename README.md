@@ -43,7 +43,7 @@ The aim is to practice patterns around e.g. a circle of fifths, alongside a metr
 ### Install on iPhone
 1. Open the link above in **Safari**.
 2. Tap **Share → Add to Home Screen**.
-3. Launch **Tones** from the home screen. It runs full-screen and works offline once loaded. Instruments work offline after you've played them once.
+3. Launch **Tones and Drones** from the home screen. It runs full-screen and works offline once loaded. Instruments work offline after you've played them once.
 
 Sound plays even with the ring/silent switch on silent (iOS 16.4+).
 
