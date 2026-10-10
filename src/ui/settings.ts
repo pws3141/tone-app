@@ -1,20 +1,21 @@
 import { unlockAudio, getAudioContext } from '../audio/context';
 import { getVoice, INSTRUMENTS } from '../audio/voice';
-import { noteName, RANDOM_MAX_MIDI, RANDOM_MIN_MIDI } from '../game/pitch';
+import { noteName } from '../game/pitch';
 import { loadSettings, type ReferenceMode, resetStats, saveSettings, type Settings } from '../storage';
 import type { Screen } from './nav';
 import { referencePicker } from './reference';
 
-const FIXED_NOTE_MIN = 36; // C2
-const FIXED_NOTE_MAX = 96; // C7
+const NOTE_MIN = 36; // C2
+const NOTE_MAX = 96; // C7
 const DURATIONS = [0.5, 0.75, 1, 1.5, 2];
 
 export const renderSettings: Screen = (root, nav) => {
   let settings: Settings = loadSettings();
 
-  const noteOptions = Array.from({ length: FIXED_NOTE_MAX - FIXED_NOTE_MIN + 1 }, (_, i) => FIXED_NOTE_MIN + i)
-    .map((m) => `<option value="${m}" ${m === settings.fixedNote ? 'selected' : ''}>${noteName(m)}</option>`)
-    .join('');
+  const noteOptions = (selected: number) =>
+    Array.from({ length: NOTE_MAX - NOTE_MIN + 1 }, (_, i) => NOTE_MIN + i)
+      .map((m) => `<option value="${m}" ${m === selected ? 'selected' : ''}>${noteName(m)}</option>`)
+      .join('');
 
   const radio = (mode: ReferenceMode, label: string, extra = '') => `
     <label class="radio">
@@ -40,9 +41,13 @@ export const renderSettings: Screen = (root, nav) => {
 
       <section class="card field">
         <span class="field-label">Reference note</span>
+        ${radio('random', 'Random')}
+        <div class="range">
+          <label>From <select id="randomMin">${noteOptions(settings.randomMin)}</select></label>
+          <label>To <select id="randomMax">${noteOptions(settings.randomMax)}</select></label>
+        </div>
         ${radio('a4', 'A4 (440 Hz)')}
-        ${radio('fixed', 'Fixed note', `<select id="fixedNote" aria-label="Fixed reference note">${noteOptions}</select>`)}
-        ${radio('random', `Random, ${noteName(RANDOM_MIN_MIDI)}–${noteName(RANDOM_MAX_MIDI)}`)}
+        ${radio('fixed', 'Fixed note', `<select id="fixedNote" aria-label="Fixed reference note">${noteOptions(settings.fixedNote)}</select>`)}
         <p class="hint">All notes use standard tuning, A = 440 Hz.</p>
       </section>
 
@@ -93,6 +98,26 @@ export const renderSettings: Screen = (root, nav) => {
     update({ fixedNote: Number((e.target as HTMLSelectElement).value), referenceMode: 'fixed' });
     $<HTMLInputElement>('input[value="fixed"]').checked = true;
   });
+
+  const randomMin = $<HTMLSelectElement>('#randomMin');
+  const randomMax = $<HTMLSelectElement>('#randomMax');
+
+  // Keep From ≤ To by moving the other end to match.
+  function updateRange(changed: 'min' | 'max'): void {
+    let min = Number(randomMin.value);
+    let max = Number(randomMax.value);
+    if (min > max) {
+      if (changed === 'min') max = min;
+      else min = max;
+      randomMin.value = String(min);
+      randomMax.value = String(max);
+    }
+    update({ randomMin: min, randomMax: max, referenceMode: 'random' });
+    $<HTMLInputElement>('input[value="random"]').checked = true;
+  }
+
+  randomMin.addEventListener('change', () => updateRange('min'));
+  randomMax.addEventListener('change', () => updateRange('max'));
 
   $<HTMLSelectElement>('#duration').addEventListener('change', (e) =>
     update({ toneDuration: Number((e.target as HTMLSelectElement).value) }),

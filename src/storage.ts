@@ -8,6 +8,9 @@ export interface Settings {
   referenceMode: ReferenceMode;
   /** MIDI note used when referenceMode is 'fixed'. */
   fixedNote: number;
+  /** Inclusive MIDI range used when referenceMode is 'random'. */
+  randomMin: number;
+  randomMax: number;
   /** Length of each tone in seconds. */
   toneDuration: number;
 }
@@ -22,8 +25,10 @@ const STATS_KEY = 'tones.stats';
 
 export const DEFAULT_SETTINGS: Settings = {
   instrument: 'sine',
-  referenceMode: 'a4',
+  referenceMode: 'random',
   fixedNote: A4_MIDI,
+  randomMin: 57, // A3
+  randomMax: 84, // C6
   toneDuration: 1,
 };
 

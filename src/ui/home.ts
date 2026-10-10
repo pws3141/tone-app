@@ -41,6 +41,7 @@ export const renderHome: Screen = (root, nav) => {
         <p>Each level has 5 pairs. Get 4 right to move up a level, where the gap shrinks:
         from ${LEVEL_CENTS[0]} cents (half a semitone) down to ${LEVEL_CENTS[LEVEL_CENTS.length - 1]} cent.
         Smaller gaps score more points.</p>
+        <p>Tap <strong>1</strong> or <strong>2</strong> to hear a tone again.</p>
       </details>
     </main>
   `;

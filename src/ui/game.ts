@@ -1,5 +1,5 @@
 import { unlockAudio } from '../audio/context';
-import { playPair } from '../audio/player';
+import { playPair, playSingle } from '../audio/player';
 import { getVoice, instrumentLabel } from '../audio/voice';
 import { centsForLevel, ROUNDS_PER_LEVEL } from '../game/levels';
 import { noteName } from '../game/pitch';
@@ -34,9 +34,9 @@ export const renderGame: Screen = (root, nav) => {
 
       <ol class="rounds" aria-label="Rounds in this level"></ol>
 
-      <section class="tones" aria-hidden="true">
-        <div class="tone" data-tone="1"><span>1</span><small>reference</small></div>
-        <div class="tone" data-tone="2"><span>2</span><small>higher or lower?</small></div>
+      <section class="tones">
+        <button class="tone" data-tone="1" aria-label="Play reference tone"><span>1</span><small>reference</small></button>
+        <button class="tone" data-tone="2" aria-label="Play second tone"><span>2</span><small>higher or lower?</small></button>
       </section>
 
       <p class="feedback" role="status" aria-live="polite"></p>
@@ -59,8 +59,8 @@ export const renderGame: Screen = (root, nav) => {
   const levelGap = $('.level-gap');
   const scoreValue = $('.score-value');
   const rounds = $('.rounds');
-  const tone1 = $('[data-tone="1"]');
-  const tone2 = $('[data-tone="2"]');
+  const tone1 = $<HTMLButtonElement>('[data-tone="1"]');
+  const tone2 = $<HTMLButtonElement>('[data-tone="2"]');
   const feedback = $('.feedback');
   const answerButtons = $('.answer-buttons');
   const nextButtons = $('.next-buttons');
@@ -83,6 +83,9 @@ export const renderGame: Screen = (root, nav) => {
     answerButtons.hidden = phase === 'answered' || phase === 'levelPassed';
     nextButtons.hidden = !answerButtons.hidden;
     replayButton.disabled = phase === 'loading' || phase === 'over' || !lastPlayed;
+    // Single-tone replay unlocks with the answer buttons, so it can't cut off the first play-through.
+    const toneDisabled = phase === 'loading' || phase === 'listening' || phase === 'over' || !lastPlayed;
+    tone1.disabled = tone2.disabled = toneDisabled;
   }
 
   function renderHeader(): void {
@@ -111,6 +114,18 @@ export const renderGame: Screen = (root, nav) => {
       if (phase === 'listening') setPhase('answering');
     });
     after(timing.endMs, () => tone2.classList.remove('on'));
+  }
+
+  function playTone(n: 1 | 2): void {
+    if (!lastPlayed || (n === 1 ? tone1 : tone2).disabled) return;
+    void unlockAudio();
+    clearTimers();
+    tone1.classList.remove('on');
+    tone2.classList.remove('on');
+    const tone = n === 1 ? tone1 : tone2;
+    const endMs = playSingle(voice, lastPlayed.midi, n === 1 ? 0 : lastPlayed.cents, settings.toneDuration);
+    after(endMs - settings.toneDuration * 1000, () => tone.classList.add('on'));
+    after(endMs, () => tone.classList.remove('on'));
   }
 
   function newTrial(): void {
@@ -207,6 +222,8 @@ export const renderGame: Screen = (root, nav) => {
   });
   nextButton.addEventListener('click', next);
   replayButton.addEventListener('click', play);
+  tone1.addEventListener('click', () => playTone(1));
+  tone2.addEventListener('click', () => playTone(2));
   $('[data-action="quit"]').addEventListener('click', () => {
     if (!finished && session.score > 0) recordGame(session.score, session.levelsCleared);
     nav.home();
@@ -216,6 +233,8 @@ export const renderGame: Screen = (root, nav) => {
     if (e.key === 'ArrowUp') answer('higher');
     else if (e.key === 'ArrowDown') answer('lower');
     else if (e.key === 'r') play();
+    else if (e.key === '1') playTone(1);
+    else if (e.key === '2') playTone(2);
     else if (e.key === 'Enter' && document.activeElement !== nextButton) next();
     else return;
     e.preventDefault();

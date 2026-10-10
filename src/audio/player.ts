@@ -25,3 +25,12 @@ export function playPair(voice: Voice, midi: number, cents: number, duration: nu
     endMs: (t1 + duration - ctx.currentTime) * 1000,
   };
 }
+
+/** Play a single tone; returns milliseconds from now until it has finished. */
+export function playSingle(voice: Voice, midi: number, cents: number, duration: number): number {
+  const ctx = getAudioContext();
+  voice.stop();
+  const t0 = ctx.currentTime + LEAD_IN;
+  voice.play(midi, cents, t0, duration);
+  return (t0 + duration - ctx.currentTime) * 1000;
+}

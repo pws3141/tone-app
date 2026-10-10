@@ -1,4 +1,4 @@
-import { A4_MIDI, noteName, RANDOM_MAX_MIDI, RANDOM_MIN_MIDI, randomMidi } from '../game/pitch';
+import { A4_MIDI, noteName, randomMidi } from '../game/pitch';
 import type { Settings } from '../storage';
 
 export function referenceLabel(settings: Settings): string {
@@ -8,7 +8,7 @@ export function referenceLabel(settings: Settings): string {
     case 'fixed':
       return `Reference ${noteName(settings.fixedNote)}`;
     case 'random':
-      return `Random reference ${noteName(RANDOM_MIN_MIDI)}–${noteName(RANDOM_MAX_MIDI)}`;
+      return `Random reference ${noteName(settings.randomMin)}–${noteName(settings.randomMax)}`;
   }
 }
 
@@ -19,6 +19,6 @@ export function referencePicker(settings: Settings): () => number {
     case 'fixed':
       return () => settings.fixedNote;
     case 'random':
-      return () => randomMidi();
+      return () => randomMidi(settings.randomMin, settings.randomMax);
   }
 }

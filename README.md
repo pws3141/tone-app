@@ -34,8 +34,9 @@ Sound plays even with the ring/silent switch on silent (iOS 16.4+).
 - Get at least 4 of 5 right to advance. Fewer than 4 ends the game.
 - The gap shrinks each level: 50 → 40 → 30 → 22 → 16 → 12 → 9 → 7 → 5 → 4 → 3 → 2 → 1 cent (100 cents = 1 semitone), with ±10% jitter.
 - A correct answer scores `round(500 / cents)`: 10 points at 50¢, 100 at 5¢ and 500 at 1¢. The high score and best level are kept on the device.
-- **Settings:** sound (sine wave, or sampled piano, sax, flute, violin and more), reference note (A4, a fixed note, or random C3–C6) and tone length.
-- Keyboard: ↑ higher, ↓ lower, `r` replay, Enter next.
+- **Settings:** sound (sine wave, or sampled piano, sax, flute, violin and more), reference note (random by default, from an adjustable range that starts at A3–C6; or A4; or a fixed note) and tone length.
+- Tap the **1** or **2** circle to hear that tone again, or **Replay** to hear the pair.
+- Keyboard: ↑ higher, ↓ lower, `1`/`2` replay one tone, `r` replay the pair, Enter next.
 
 Instrument samples come from the MusyngKite General MIDI soundfont via [smplr](https://github.com/danigb/smplr). Both tones of a pair use the same sample and differ only by detune, so the pitch difference is exact.
 

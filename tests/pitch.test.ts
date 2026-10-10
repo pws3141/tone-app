@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { centsBetween, midiToFreq, noteName, RANDOM_MAX_MIDI, RANDOM_MIN_MIDI, randomMidi } from '../src/game/pitch';
+import { centsBetween, midiToFreq, noteName, randomMidi } from '../src/game/pitch';
 
 describe('pitch', () => {
   it('uses A4 = 440 Hz standard tuning', () => {
@@ -23,8 +23,9 @@ describe('pitch', () => {
     expect(noteName(61)).toBe('C♯4');
   });
 
-  it('picks random notes within C3–C6', () => {
-    expect(randomMidi(() => 0)).toBe(RANDOM_MIN_MIDI);
-    expect(randomMidi(() => 0.999999)).toBe(RANDOM_MAX_MIDI);
+  it('picks random notes within an inclusive range', () => {
+    expect(randomMidi(57, 84, () => 0)).toBe(57);
+    expect(randomMidi(57, 84, () => 0.999999)).toBe(84);
+    expect(randomMidi(60, 60, () => 0.7)).toBe(60);
   });
 });

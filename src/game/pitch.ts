@@ -1,10 +1,6 @@
 export const A4_MIDI = 69;
 export const A4_FREQ = 440;
 
-/** Random reference notes are drawn from C3–C6 inclusive. */
-export const RANDOM_MIN_MIDI = 48;
-export const RANDOM_MAX_MIDI = 84;
-
 const NOTE_NAMES = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'];
 
 /** Frequency of a 12-TET MIDI note (A4 = 440 Hz), optionally offset by cents. */
@@ -21,6 +17,7 @@ export function noteName(midi: number): string {
   return `${NOTE_NAMES[midi % 12]}${Math.floor(midi / 12) - 1}`;
 }
 
-export function randomMidi(rand: () => number = Math.random): number {
-  return RANDOM_MIN_MIDI + Math.floor(rand() * (RANDOM_MAX_MIDI - RANDOM_MIN_MIDI + 1));
+/** A random MIDI note between `min` and `max` inclusive. */
+export function randomMidi(min: number, max: number, rand: () => number = Math.random): number {
+  return min + Math.floor(rand() * (max - min + 1));
 }
