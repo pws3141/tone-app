@@ -4,13 +4,14 @@ import { LEVEL_CENTS } from '../game/levels';
 import { loadSettings, loadStats } from '../storage';
 import { referenceLabel } from './reference';
 import type { Screen } from './nav';
+import { renderTabBar } from './tabbar';
 
 export const renderHome: Screen = (root, nav) => {
   const stats = loadStats();
   const settings = loadSettings();
 
   root.innerHTML = `
-    <main class="screen home">
+    <main class="screen home with-tabbar">
       <header class="hero">
         <h1>Tones</h1>
         <p class="tagline">Train your ear for microtonal pitch</p>
@@ -51,4 +52,5 @@ export const renderHome: Screen = (root, nav) => {
     nav.game();
   });
   root.querySelector('[data-action="settings"]')!.addEventListener('click', () => nav.settings());
+  renderTabBar(root, nav, 'tones');
 };

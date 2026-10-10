@@ -1,21 +1,14 @@
 import { unlockAudio, getAudioContext } from '../audio/context';
 import { getVoice, INSTRUMENTS } from '../audio/voice';
-import { noteName } from '../game/pitch';
 import { loadSettings, type ReferenceMode, resetStats, saveSettings, type Settings } from '../storage';
 import type { Screen } from './nav';
+import { noteOptions } from './notes';
 import { referencePicker } from './reference';
 
-const NOTE_MIN = 36; // C2
-const NOTE_MAX = 96; // C7
 const DURATIONS = [0.5, 0.75, 1, 1.5, 2];
 
 export const renderSettings: Screen = (root, nav) => {
   let settings: Settings = loadSettings();
-
-  const noteOptions = (selected: number) =>
-    Array.from({ length: NOTE_MAX - NOTE_MIN + 1 }, (_, i) => NOTE_MIN + i)
-      .map((m) => `<option value="${m}" ${m === selected ? 'selected' : ''}>${noteName(m)}</option>`)
-      .join('');
 
   const radio = (mode: ReferenceMode, label: string, extra = '') => `
     <label class="radio">

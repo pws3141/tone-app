@@ -1,4 +1,5 @@
 import './styles.css';
+import { renderDrones } from './ui/drones';
 import { renderGame } from './ui/game';
 import { renderHome } from './ui/home';
 import type { Nav, Screen } from './ui/nav';
@@ -18,6 +19,7 @@ const nav: Nav = {
   home: () => show(renderHome),
   game: () => show(renderGame),
   settings: () => show(renderSettings),
+  drones: () => show(renderDrones),
 };
 
 nav.home();

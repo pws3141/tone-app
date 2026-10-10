@@ -17,6 +17,17 @@ export function noteName(midi: number): string {
   return `${NOTE_NAMES[midi % 12]}${Math.floor(midi / 12) - 1}`;
 }
 
+/** Key names as musicians usually spell them (flats for the flat keys). */
+const KEY_NAMES = ['C', 'D♭', 'D', 'E♭', 'E', 'F', 'F♯', 'G', 'A♭', 'A', 'B♭', 'B'];
+
+export function keyName(midi: number): string {
+  return KEY_NAMES[((midi % 12) + 12) % 12];
+}
+
+export function octaveOf(midi: number): number {
+  return Math.floor(midi / 12) - 1;
+}
+
 /** A random MIDI note between `min` and `max` inclusive. */
 export function randomMidi(min: number, max: number, rand: () => number = Math.random): number {
   return min + Math.floor(rand() * (max - min + 1));

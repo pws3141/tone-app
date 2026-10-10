@@ -448,3 +448,269 @@ select {
 .hint:empty {
   display: none;
 }
+
+/* Tab bar */
+
+.with-tabbar {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 88px);
+}
+
+.tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 16px calc(env(safe-area-inset-bottom) + 6px);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid var(--surface-2);
+  z-index: 10;
+}
+
+.tabbar button {
+  flex: 1;
+  max-width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px;
+  min-height: 52px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.tabbar button.active {
+  color: var(--accent);
+}
+
+.tabbar svg {
+  width: 26px;
+  height: 26px;
+}
+
+/* Drones */
+
+.now-playing {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.now-key {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+  line-height: 1;
+}
+
+.key-name {
+  font-size: 4.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.key-octave {
+  font-size: 1.4rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.now-status {
+  margin: 0;
+  color: var(--muted);
+  min-height: 2.8em;
+  line-height: 1.4;
+}
+
+.beats {
+  list-style: none;
+  display: flex;
+  gap: 12px;
+  padding: 0;
+  margin: 0;
+}
+
+.beats li {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  transition: background 0.05s;
+}
+
+.beats li.accent {
+  outline: 2px solid var(--surface-2);
+  outline-offset: 2px;
+}
+
+.beats li.on {
+  background: var(--tone-on);
+}
+
+.key-preview {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  padding: 0;
+  margin: 4px 0 0;
+}
+
+.key-preview li {
+  min-width: 2.2em;
+  padding: 4px 6px;
+  border-radius: 8px;
+  background: var(--surface-2);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.key-preview li.past {
+  opacity: 0.45;
+}
+
+.key-preview li.current {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.transport {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tempo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.btn.step {
+  width: 56px;
+  font-size: 1.5rem;
+  padding: 8px;
+}
+
+.bpm {
+  font-size: 2rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.bpm small {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+input[type='range'] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.switches {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.btn.stop {
+  background: var(--wrong);
+  color: #fff;
+}
+
+fieldset.card {
+  border: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+fieldset.card legend {
+  float: left;
+  width: 100%;
+  padding: 0;
+  margin-bottom: 10px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+}
+
+.row select {
+  min-width: 0;
+  max-width: 62%;
+  min-height: 40px;
+  padding: 6px 10px;
+}
+
+.row input[type='range'] {
+  max-width: 55%;
+}
+
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  font-weight: 600;
+}
+
+.switch {
+  appearance: none;
+  -webkit-appearance: none;
+  flex-shrink: 0;
+  width: 50px;
+  height: 30px;
+  border-radius: 15px;
+  background: var(--surface-2);
+  position: relative;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin: 0;
+}
+
+.switch::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
+  transition: transform 0.15s;
+}
+
+.switch:checked {
+  background: var(--right);
+}
+
+.switch:checked::after {
+  transform: translateX(20px);
+}
+
+.switch:disabled,
+select:disabled {
+  opacity: 0.5;
+}
