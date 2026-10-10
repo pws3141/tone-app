@@ -21,6 +21,7 @@ export const INSTRUMENTS: { id: string; label: string }[] = [
   { id: 'trumpet', label: 'Trumpet' },
   { id: 'violin', label: 'Violin' },
   { id: 'cello', label: 'Cello' },
+  { id: 'contrabass', label: 'Double bass' },
   { id: 'acoustic_guitar_nylon', label: 'Nylon guitar' },
   { id: 'electric_piano_1', label: 'Electric piano' },
   { id: 'vibraphone', label: 'Vibraphone' },

@@ -2,7 +2,7 @@ import { Soundfont } from 'smplr';
 import { midiToFreq } from '../game/pitch';
 
 /** Instruments with soundfont loop points, so a held note can sustain indefinitely. */
-const LOOPABLE = new Set(['tenor_sax', 'flute', 'oboe', 'trumpet', 'violin', 'cello', 'vibraphone']);
+const LOOPABLE = new Set(['tenor_sax', 'flute', 'oboe', 'trumpet', 'violin', 'cello', 'contrabass', 'vibraphone']);
 /** Loopable, but naturally dies away, so re-struck by default. */
 const DECAYING = new Set(['vibraphone']);
 

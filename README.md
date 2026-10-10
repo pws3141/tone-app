@@ -71,7 +71,7 @@ Open the **Drones** tab to practise scales and patterns around a cycle of keys, 
   - The metronome click can be a wood block (default), clave, click, beep or cowbell, with an accented beat 1.
   - You can set the beats per bar and the volume of each.
 - **How sampled drones play:**
-  - Cello, violin, flute, oboe, trumpet and tenor sax hold the note.
+  - Cello, double bass, violin, flute, oboe, trumpet and tenor sax hold the note.
   - Piano, guitar, electric piano, alto sax and clarinet have no loop points, so they're re-struck every bar.
   - Vibraphone is re-struck by default; its toggle lets you hold it instead.
 - The screen stays awake while a drone is playing (Screen Wake Lock).
