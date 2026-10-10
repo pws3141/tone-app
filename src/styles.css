@@ -386,6 +386,7 @@ h1 {
 }
 
 .field > label,
+.field > .row,
 .field-label {
   font-weight: 600;
 }
@@ -708,6 +709,41 @@ fieldset.card legend {
 
 .switch:checked::after {
   transform: translateX(20px);
+}
+
+.beats li.silent {
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--surface-2);
+}
+
+.beats li.silent.on {
+  background: color-mix(in srgb, var(--tone-on) 35%, transparent);
+}
+
+.beat-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.chip {
+  font: inherit;
+  font-weight: 700;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 2px solid var(--surface-2);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.chip[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
 }
 
 .switch:disabled,

@@ -30,6 +30,8 @@ export interface DroneSettings {
   repeat: boolean;
   bpm: number;
   beatsPerBar: number;
+  /** Beats (from 1) the metronome sounds on; null = every beat. */
+  clickBeats: number[] | null;
   accent: boolean;
   countIn: boolean;
   droneOn: boolean;
@@ -63,6 +65,7 @@ export const DEFAULT_DRONE_SETTINGS: DroneSettings = {
   repeat: false,
   bpm: 80,
   beatsPerBar: 4,
+  clickBeats: null,
   accent: true,
   countIn: true,
   droneOn: true,

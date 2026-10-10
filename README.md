@@ -69,11 +69,11 @@ Open the **Drones** tab to practise scales and patterns around a cycle of keys, 
 - **Sound:**
   - Drone sound uses the same sounds as Tones.
   - The metronome click can be a wood block (default), clave, click, beep or cowbell, with an accented beat 1.
-  - You can set the beats per bar and the volume of each.
+  - You can set the beats per bar, which beats the metronome clicks on (e.g. just 2 and 4; the count-in always clicks every beat), and the volume of each.
 - **How sampled drones play:**
-  - Cello, double bass, violin, flute, oboe, trumpet and tenor sax hold the note.
-  - Piano, guitar, electric piano, alto sax and clarinet have no loop points, so they're re-struck every bar.
-  - Vibraphone is re-struck by default; its toggle lets you hold it instead.
+  - Bowed and wind instruments hold the note: the steady middle of the sample is crossfaded into itself, and volume is evened out across instruments and notes.
+  - Piano, guitar, electric piano and vibraphone die away naturally, so they're re-struck every bar.
+  - **Re-strike every bar** re-attacks a held instrument on each bar instead.
 - The screen stays awake while a drone is playing (Screen Wake Lock).
 
 Instrument samples come from the MusyngKite General MIDI soundfont via [smplr](https://github.com/danigb/smplr). Both tones of a pair use the same sample and differ only by detune, so the pitch difference is exact.

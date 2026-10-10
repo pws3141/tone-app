@@ -101,6 +101,10 @@ export const renderDrones: Screen = (root, nav) => {
         <label class="row">Click <select id="clickSound">${options(CLICK_SOUNDS.map((c) => ({ value: c.id, label: c.label })), s.clickSound)}</select></label>
         <label class="row">Click volume <input type="range" id="clickVolume" min="0" max="1" step="0.05" value="${s.clickVolume}"></label>
         <label class="row">Beats per bar <select id="beatsPerBar" data-lock>${options(range(2, 7).map((n) => ({ value: n, label: String(n) })), s.beatsPerBar)}</select></label>
+        <div class="row">
+          <span id="clickBeatsLabel">Click on beats</span>
+          <div class="beat-chips" role="group" aria-labelledby="clickBeatsLabel"></div>
+        </div>
         <label class="switch-row"><span>Accent beat 1</span><input type="checkbox" class="switch" id="accent" ${s.accent ? 'checked' : ''}></label>
         <label class="switch-row"><span>Count-in bar</span><input type="checkbox" class="switch" id="countIn" data-lock ${s.countIn ? 'checked' : ''}></label>
       </section>
@@ -119,6 +123,16 @@ export const renderDrones: Screen = (root, nav) => {
   const loadStatus = $('[data-status]');
   const restrikeBox = $<HTMLInputElement>('#restrike');
   const restrikeRow = $('#restrikeRow');
+  const beatChips = $('.beat-chips');
+
+  /** Is beat `i` (from 0) one the metronome sounds on? */
+  const clicksOn = (i: number) => !s.clickBeats || s.clickBeats.includes(i + 1);
+
+  function renderBeatChips(): void {
+    beatChips.innerHTML = range(1, s.beatsPerBar)
+      .map((b) => `<button class="chip" data-beat="${b}" aria-pressed="${clicksOn(b - 1)}">${b}</button>`)
+      .join('');
+  }
 
   function update(patch: Partial<DroneSettings>): void {
     s = { ...s, ...patch };
@@ -147,7 +161,10 @@ export const renderDrones: Screen = (root, nav) => {
 
   function renderBeats(current: number): void {
     beatsEl.innerHTML = range(0, s.beatsPerBar - 1)
-      .map((i) => `<li class="${i === 0 && s.accent ? 'accent' : ''} ${i === current ? 'on' : ''}"></li>`)
+      .map((i) => {
+        const classes = [i === 0 && s.accent && clicksOn(0) ? 'accent' : '', i === current ? 'on' : '', clicksOn(i) ? '' : 'silent'];
+        return `<li class="${classes.join(' ').trim()}"></li>`;
+      })
       .join('');
   }
 
@@ -221,8 +238,10 @@ export const renderDrones: Screen = (root, nav) => {
     const d = getDrone(s.droneInstrument, restrike());
     if (s.droneInstrument !== 'sine') loadStatus.textContent = `Loading ${instrumentLabel(s.droneInstrument)}…`;
     playButton.disabled = true;
+    keys = buildKeySequence(s.startNote, s.interval, s.jumps);
     try {
       await d.ready;
+      await d.prepare(keys);
     } catch {
       loadStatus.textContent = `Couldn't load ${instrumentLabel(s.droneInstrument)} (offline?). Try the sine wave.`;
       updatePlayEnabled();
@@ -230,7 +249,6 @@ export const renderDrones: Screen = (root, nav) => {
     }
     loadStatus.textContent = '';
     drone = d;
-    keys = buildKeySequence(s.startNote, s.interval, s.jumps);
     const cfg: TimelineConfig = {
       beatsPerBar: s.beatsPerBar,
       barsPerKey: s.barsPerKey,
@@ -250,9 +268,12 @@ export const renderDrones: Screen = (root, nav) => {
         d.stop(time);
         return false;
       }
-      if (s.metronomeOn && !late) playClick(ctx, s.clickSound, s.accent && info.barStart, time, bus.click);
+      // The count-in clicks every beat so the tempo is clear.
+      const click = s.metronomeOn && !late && (info.countIn || clicksOn(info.beatInBar));
+      if (click) playClick(ctx, s.clickSound, s.accent && info.barStart, time, bus.click);
       if (info.keyStart) d.start(keys[info.keyIndex], time);
       else if (info.barStart && !info.countIn && !late) d.restrike(time);
+      d.extend(time + 4);
     });
     setPlaying(true);
     scheduler.start();
@@ -330,7 +351,27 @@ export const renderDrones: Screen = (root, nav) => {
   });
   onSwitch('restrike', (c) => (update({ restrike: c }), preload()));
   onSelect('clickSound', (v) => update({ clickSound: v as ClickSound }));
-  onSelect('beatsPerBar', (v) => (update({ beatsPerBar: Number(v) }), renderIdle()));
+  onSelect('beatsPerBar', (v) => {
+    const beatsPerBar = Number(v);
+    const kept = s.clickBeats?.filter((b) => b <= beatsPerBar) ?? null;
+    update({ beatsPerBar, clickBeats: kept?.length ? kept : null });
+    renderBeatChips();
+    renderIdle();
+  });
+
+  beatChips.addEventListener('click', (e) => {
+    const beat = Number((e.target as Element).closest<HTMLElement>('[data-beat]')?.dataset.beat);
+    if (!beat) return;
+    const selected = new Set(s.clickBeats ?? range(1, s.beatsPerBar));
+    if (selected.has(beat)) selected.delete(beat);
+    else selected.add(beat);
+    // At least one beat must click; use the Metronome switch to silence it.
+    if (selected.size === 0) return;
+    const sorted = [...selected].sort((a, b) => a - b);
+    update({ clickBeats: sorted.length === s.beatsPerBar ? null : sorted });
+    renderBeatChips();
+    if (!playing) renderBeats(-1);
+  });
   onSwitch('accent', (c) => (update({ accent: c }), playing || renderBeats(-1)));
   onSwitch('countIn', (c) => update({ countIn: c }));
   onSwitch('droneOn', (c) => (update({ droneOn: c }), applyMix(), updatePlayEnabled()));
@@ -351,6 +392,7 @@ export const renderDrones: Screen = (root, nav) => {
 
   bpmValue.textContent = String(s.bpm);
   syncRestrike();
+  renderBeatChips();
   applyMix();
   setPlaying(false);
   renderIdle();
